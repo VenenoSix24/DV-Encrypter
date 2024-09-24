@@ -9,7 +9,6 @@
         :root {
             --primary-color: #3eaf7c;
             --background-color: #f3f4f5;
-            --sidebar-color: #ffffff;
             --text-color: #2c3e50;
             --border-color: #eaecef;
         }
@@ -30,7 +29,7 @@
             display: flex;
             flex-direction: column;
             height: 100%;
-            padding: 2rem;
+            padding: 1.8rem;
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -40,16 +39,19 @@
             overflow-y: auto;
         }
 
+        h1,
+        h2 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+
         h1 {
             font-size: 2.5rem;
-            text-align: center;
-            margin-bottom: 1.5rem;
         }
 
         h2 {
             font-size: 1.8rem;
-            text-align: center;
-            margin-bottom: 1rem;
         }
 
         .project-description,
@@ -62,7 +64,7 @@
         }
 
         .project-description {
-            text-align: center;
+            text-align: justify;
             font-size: 1.1rem;
         }
 
@@ -79,20 +81,22 @@
 
         textarea {
             width: 100%;
-            height: 150px;
+            height: 145px;
+            /* 统一文本框高度 */
             margin-bottom: 1rem;
+            /* 文本框与下方元素的间距 */
             border: 1px solid var(--border-color);
             border-radius: 4px;
             padding: 0.8rem;
             font-size: 1rem;
-            resize: vertical;
             box-sizing: border-box;
         }
 
         .button-group {
             display: flex;
             gap: 1rem;
-            margin-bottom: 1rem;
+            margin: 0 0 1rem 0;
+            /* 设置底部间距 */
             justify-content: center;
         }
 
@@ -104,20 +108,13 @@
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s;
+            height: 48px;
+            /* 设置按钮高度 */
             font-size: 1rem;
-        }
 
-        button:hover {
-            background-color: #2c8f5f;
-        }
-
-        a {
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
+            button:hover {
+                background-color: #2c8f5f;
+            }
         }
 
         @media (max-width: 768px) {
@@ -145,12 +142,15 @@
         <div class="main-content">
             <h1>打瓦加密器</h1>
             <div class="project-description">
-                <p>打瓦加密器是一个简单的在线工具，可以将文本转换为"打"和"瓦"组成的字符串，或将"打瓦"字符串解密回原始文本。这个项目旨在提供一种有趣的方式来加密和解密信息。</p>
-                <p>GitHub 仓库：<a href="https://github.com/VenenoSix24/DV-Encrypter" target="_blank" rel="noopener noreferrer">[GitHub仓库链接]</a></p>
-
+                <p><strong>打瓦加密器</strong>是一个简单的在线工具，可以将文本转换为"打"和"瓦"组成的字符串，亦可解密回原始文本。这个项目旨在提供一种有趣的方式来加密和解密信息。本项目完全本地运行，并不会上传你所输入的任何信息。
+                </p>
+                <p><strong>注意：这种加密方式仅用于娱乐，不适用于需要高度安全性的场景。</strong></p>
+                <p>GitHub 仓库：<a href="https://github.com/VenenoSix24/DV-Encrypter" target="_blank"
+                        rel="noopener noreferrer">[DV-Encrypter]</a></p>
             </div>
+
             <div class="converters">
-                <div id="text-to-binary" class="converter">
+                <div class="converter">
                     <h2>加密</h2>
                     <textarea id="inputText" placeholder="输入要加密的文本（支持中文）"></textarea>
                     <div class="button-group">
@@ -160,9 +160,9 @@
                     <textarea id="outputBinary" readonly placeholder="加密结果将显示在这里"></textarea>
                 </div>
 
-                <div id="binary-to-text" class="converter">
+                <div class="converter">
                     <h2>解密</h2>
-                    <textarea id="inputBinary" placeholder="输入要解密的'打瓦'字符串"></textarea>
+                    <textarea id="inputBinary" placeholder="输入要解密的“打瓦”字符串"></textarea>
                     <div class="button-group">
                         <button onclick="convertToText()">解密</button>
                         <button onclick="copyText('outputText')">复制结果</button>
@@ -176,29 +176,38 @@
     <script>
         function convertToBinary() {
             const input = document.getElementById('inputText').value;
-            let binary = '';
-            for (let i = 0; i < input.length; i++) {
-                let bin = input.charCodeAt(i).toString(2);
-                bin = '0'.repeat(16 - bin.length) + bin;
-                binary += bin;
+            if (!input) {
+                alert('请输入要加密的文本');
+                return;
             }
-            const result = binary.replace(/0/g, '打').replace(/1/g, '瓦');
-            document.getElementById('outputBinary').value = result;
+            const binary = [...input].map(char => char.charCodeAt(0).toString(2).padStart(16, '0')).join('');
+            document.getElementById('outputBinary').value = binary.replace(/0/g, '打').replace(/1/g, '瓦');
         }
 
         function convertToText() {
             const input = document.getElementById('inputBinary').value;
+            if (!input) {
+                alert('请输入要解密的“打瓦”字符串');
+                return;
+            }
             const binary = input.replace(/打/g, '0').replace(/瓦/g, '1');
             let result = '';
+
             for (let i = 0; i < binary.length; i += 16) {
-                const byte = binary.substr(i, 16);
-                result += String.fromCharCode(parseInt(byte, 2));
+                const byte = binary.slice(i, i + 16);
+                if (byte.length === 16) {
+                    result += String.fromCharCode(parseInt(byte, 2));
+                }
             }
             document.getElementById('outputText').value = result;
         }
 
         function copyText(elementId) {
             const element = document.getElementById(elementId);
+            if (!element.value) {
+                alert('没有内容可复制');
+                return;
+            }
             element.select();
             document.execCommand('copy');
             alert('文本已复制到剪贴板');
