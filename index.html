@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>打瓦加密器</title>
+    <style>
+        :root {
+            --primary-color: #3eaf7c;
+            --background-color: #f3f4f5;
+            --sidebar-color: #ffffff;
+            --text-color: #2c3e50;
+            --border-color: #eaecef;
+        }
+
+        body,
+        html {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            height: 100%;
+            font-size: 16px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .project-description,
+        .converters {
+            background-color: #ffffff;
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .project-description {
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .converters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .converter {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.8rem;
+            font-size: 1rem;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            justify-content: center;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            background-color: #2c8f5f;
+        }
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .converters {
+                flex-direction: column;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="main-content">
+            <h1>打瓦加密器</h1>
+            <div class="project-description">
+                <p>打瓦加密器是一个简单的在线工具，可以将文本转换为"打"和"瓦"组成的字符串，或将"打瓦"字符串解密回原始文本。这个项目旨在提供一种有趣的方式来加密和解密信息。</p>
+                <p>GitHub 仓库：<a href="https://github.com/VenenoSix24/DV-Encrypter" target="_blank" rel="noopener noreferrer">[GitHub仓库链接]</a></p>
+
+            </div>
+            <div class="converters">
+                <div id="text-to-binary" class="converter">
+                    <h2>加密</h2>
+                    <textarea id="inputText" placeholder="输入要加密的文本（支持中文）"></textarea>
+                    <div class="button-group">
+                        <button onclick="convertToBinary()">加密</button>
+                        <button onclick="copyText('outputBinary')">复制结果</button>
+                    </div>
+                    <textarea id="outputBinary" readonly placeholder="加密结果将显示在这里"></textarea>
+                </div>
+
+                <div id="binary-to-text" class="converter">
+                    <h2>解密</h2>
+                    <textarea id="inputBinary" placeholder="输入要解密的'打瓦'字符串"></textarea>
+                    <div class="button-group">
+                        <button onclick="convertToText()">解密</button>
+                        <button onclick="copyText('outputText')">复制结果</button>
+                    </div>
+                    <textarea id="outputText" readonly placeholder="解密结果将显示在这里"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function convertToBinary() {
+            const input = document.getElementById('inputText').value;
+            let binary = '';
+            for (let i = 0; i < input.length; i++) {
+                let bin = input.charCodeAt(i).toString(2);
+                bin = '0'.repeat(16 - bin.length) + bin;
+                binary += bin;
+            }
+            const result = binary.replace(/0/g, '打').replace(/1/g, '瓦');
+            document.getElementById('outputBinary').value = result;
+        }
+
+        function convertToText() {
+            const input = document.getElementById('inputBinary').value;
+            const binary = input.replace(/打/g, '0').replace(/瓦/g, '1');
+            let result = '';
+            for (let i = 0; i < binary.length; i += 16) {
+                const byte = binary.substr(i, 16);
+                result += String.fromCharCode(parseInt(byte, 2));
+            }
+            document.getElementById('outputText').value = result;
+        }
+
+        function copyText(elementId) {
+            const element = document.getElementById(elementId);
+            element.select();
+            document.execCommand('copy');
+            alert('文本已复制到剪贴板');
+        }
+    </script>
+</body>
+
+</html>
