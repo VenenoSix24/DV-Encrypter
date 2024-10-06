@@ -18,7 +18,7 @@
 
 ## 截图
 
-![Introduction.jpg](/Introduction.jpg)
+![Introduction.jpg](https://s2.loli.net/2024/10/06/ZK3M7tEpJu1PIQd.jpg)
 
 ## 部署
 
